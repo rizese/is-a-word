@@ -6,7 +6,10 @@
   "author": "Ricky Franzese <ricky+zese@thirtymadison.com>",
   "license": "MIT",
   "scripts": {
+    "start:db": "docker-compose up -d",
+    "stop:db": "docker-compose down",
     "start": "ts-node src/index.ts",
+    "reset:db": "docker exec -i is-a-word-db psql -U postgres -d isaworddb -f /scripts/reset.sql",
     "build": "tsc"
   },
   "dependencies": {

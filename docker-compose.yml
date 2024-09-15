@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   db:
-    image: postgres:13
+    image: postgres:15
     container_name: is-a-word-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -11,3 +11,5 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/reset.sql:/scripts/reset.sql
+
