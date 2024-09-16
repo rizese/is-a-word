@@ -24,3 +24,7 @@ CREATE TABLE IF NOT EXISTS words (
     first_letter CHAR(1),
     grade_level grade_enum
 );
+
+CREATE INDEX IF NOT EXISTS idx_word ON words(word);
+CREATE INDEX IF NOT EXISTS idx_first_letter ON words(first_letter);
+CREATE INDEX IF NOT EXISTS idx_grade_level ON words(grade_level);

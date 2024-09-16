@@ -10,6 +10,7 @@
     "stop:db": "docker-compose down",
     "start": "ts-node src/index.ts",
     "reset:db": "docker exec -i is-a-word-db psql -U postgres -d isaworddb -f /scripts/reset.sql",
+    "restart:db": "yarn stop:db && yarn start:db",
     "build": "tsc"
   },
   "dependencies": {
@@ -17,6 +18,8 @@
     "pg": "^8.12.0"
   },
   "devDependencies": {
+    "@types/node": "^22.5.5",
+    "@types/pg": "^8.11.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   }
