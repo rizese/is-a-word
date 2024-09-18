@@ -1,54 +1,65 @@
-import fs from 'fs';
-import path from 'path';
+export type TrieNode = [string, number[]];
 
-export interface TrieNode {
-  0: string;      // Single character
-  1: number[];    // Array of indices (numbers)
-}
+function constructWordTrie(words: string[]): TrieNode[] {
+  const trie: TrieNode[] = [];
+  let nodeIndex = 0;
 
-function insertWord(trie: TrieNode[], word: string): void {
-  let currentIndex = 0;
+  // Helper function to find or create a node
+  function findOrCreateNode(char: string): number {
+    // Check if node already exists
+    for (let i = 0; i < trie.length; i++) {
+      if (trie[i][0] === char) {
+        return i;
+      }
+    }
+    // Create a new node if not found
+    const newNode: TrieNode = [char, []];
+    trie.push(newNode);
+    return nodeIndex++;
+  }
 
-  for (let i = 0; i < word.length; i++) {
-    const char = word[i];
-    let foundIndex = trie[currentIndex][1].find(
-      index => trie[index][0] === char
-    );
+  for (const word of words) {
+    let currentNodeIndex = findOrCreateNode(word[0]);
 
-    // If the character is not found, create a new TrieNode for it
-    if (foundIndex === undefined) {
-      const newNodeIndex = trie.length;
-      trie.push([char, []]);
-      trie[currentIndex][1].push(newNodeIndex);
-      currentIndex = newNodeIndex;
-    } else {
-      currentIndex = foundIndex;
+    for (let i = 1; i < word.length; i++) {
+      const char = word[i];
+      const childIndex = findOrCreateNode(char);
+
+      if (!trie[currentNodeIndex][1].includes(childIndex)) {
+        trie[currentNodeIndex][1].push(childIndex);
+      }
+
+      currentNodeIndex = childIndex;
     }
   }
-}
-
-function buildTrie(words: string[]): TrieNode[] {
-  const trie: TrieNode[] = [['', []]];  // Initialize root node
-
-  words.forEach(word => insertWord(trie, word));
 
   return trie;
 }
 
-function saveTrieToFile(trieString: string, filename: string): void {
-  const filePath = path.join(__dirname, filename);
-  fs.writeFileSync(filePath, trieString);
-  console.log(`Trie saved to ${filePath}`);
-}
+// Example usage
+const words: string[] = [
+  'balance',
+  'banana',
+  'basic',
+  'between',
+  'blast',
+  'blue',
+  'brother',
+];
+const wordTrie = constructWordTrie(words);
+console.log(wordTrie);
 
-function exportWrap(t:TrieNode[]): string {
-    return `
-import { TrieNode } from "./build-word-trie";
-
-export const wordTrie: TrieNode[] =${JSON.stringify(t, null, 2)};`
-}
-
-const words = ['banana', 'balance', 'between', 'basic'];
-const wordTrie = buildTrie(words);
-saveTrieToFile(exportWrap(wordTrie), 'word-trie.ts');
-console.log('Saved to trie-data.ts')
+// 0  ['b', [1, 5, 2, 11]],
+// 1  ['a', [2, 3, 6]],
+// 2  ['l', [1, 10]],
+// 3  ['n', [4, 1]],
+// 4  ['c', [5]],
+// 5  ['e', [8, 5, 3, 11]],
+// 6  ['s', [7, 8]],
+// 7  ['i', [4]],
+// 8  ['t', [9, 13]],
+// 9  ['w', [5]],
+// 10 ['u', [5]],
+// 11 ['r', [12]],
+// 12 ['o', [8]],
+// 13 ['h', [5]];

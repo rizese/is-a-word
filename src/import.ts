@@ -32,11 +32,12 @@ const importWords = async () => {
 
       if (trimmedWord) {
         const firstLetter = trimmedWord.charAt(0).toLowerCase();
+        // todo - upsert this
         await client.query(
           'INSERT INTO words (word, first_letter) VALUES ($1, $2)',
-          [trimmedWord, firstLetter]
+          [trimmedWord, firstLetter],
         );
-      console.log(`Added ${firstLetter} word: ${trimmedWord}`)
+        console.log(`Added ${firstLetter} word: ${trimmedWord}`);
       }
     }
 
