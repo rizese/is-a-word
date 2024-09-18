@@ -18,33 +18,33 @@ import {
 import '@xyflow/react/dist/style.css';
 
 const nodeDefaults = {
-  sourcePosition: Position.Right,
-  targetPosition: Position.Left,
+  sourcePosition: Position.Bottom,
+  targetPosition: Position.Top,
 };
 
 const initialNodes: Node[] = [
   {
     id: 'A',
     type: 'input',
-    position: { x: 0, y: 150 },
+    position: { x: 0, y: 0 },
     data: { label: 'A' },
     ...nodeDefaults,
   },
   {
     id: 'B',
-    position: { x: 250, y: 0 },
+    position: { x: -200, y: 200 },
     data: { label: 'B' },
     ...nodeDefaults,
   },
   {
     id: 'C',
-    position: { x: 250, y: 150 },
+    position: { x: 0, y: 200 },
     data: { label: 'C' },
     ...nodeDefaults,
   },
   {
     id: 'D',
-    position: { x: 250, y: 300 },
+    position: { x: 200, y: 200 },
     data: { label: 'D' },
     ...nodeDefaults,
   },
@@ -55,20 +55,23 @@ const initialEdges: Edge[] = [
     id: 'A-B',
     source: 'A',
     target: 'B',
+    // type: 'smoothstep',
   },
   {
     id: 'A-C',
     source: 'A',
     target: 'C',
+    // type: 'smoothstep',
   },
   {
     id: 'A-D',
     source: 'A',
     target: 'D',
+    // type: 'smoothstep',
   },
 ];
 
-const ColorModeFlow = () => {
+export const WordTrieFlow = () => {
   const [colorMode, setColorMode] = useState<ColorMode>('dark');
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -82,6 +85,8 @@ const ColorModeFlow = () => {
     setColorMode(evt.target.value as ColorMode);
   };
 
+  const isLocked = true;
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -91,10 +96,15 @@ const ColorModeFlow = () => {
       onConnect={onConnect}
       colorMode={colorMode}
       fitView
+      edgesFocusable={!isLocked}
+      nodesDraggable={!isLocked}
+      nodesConnectable={!isLocked}
+      nodesFocusable={!isLocked}
+      elementsSelectable={!isLocked}
     >
-      <MiniMap />
+      {/* <MiniMap /> */}
       <Background />
-      <Controls />
+      {/* <Controls /> */}
 
       <Panel position="top-right">
         <select onChange={onChange} data-testid="colormode-select">
@@ -106,5 +116,3 @@ const ColorModeFlow = () => {
     </ReactFlow>
   );
 };
-
-export default ColorModeFlow;
