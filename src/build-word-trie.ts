@@ -1,4 +1,10 @@
+import { writeFileSync } from 'fs';
+import { join } from 'path';
+import * as prettier from 'prettier';
+
 export type TrieNode = [string, number[]];
+
+const SAVE_PATH = 'word-trie.ts';
 
 function constructWordTrie(words: string[]): TrieNode[] {
   const trie: TrieNode[] = [];
@@ -47,7 +53,41 @@ const words: string[] = [
   'brother',
 ];
 const wordTrie = constructWordTrie(words);
+
+const saveTrieToFile = async (trieContent: string, filename: string) => {
+  const filePath = join(__dirname, filename);
+  writeFileSync(filePath, trieContent);
+
+  try {
+    const formattedContent = await prettier.format(trieContent, {
+      parser: 'typescript',
+    });
+    writeFileSync(filePath, formattedContent);
+    console.log(`Trie formatted and saved to ${filename}`);
+  } catch (error) {
+    console.error('Error formatting the trie content:', error);
+  }
+};
+
+const trieFileWrap = (trie: TrieNode[]): string => {
+  const trieStr = trie.map(
+    (node, index): string => `/* ${index} */ ${JSON.stringify(node)}`,
+  );
+
+  const content = `
+  import { TrieNode } from "./build-word-trie"\n;
+  \n
+  export const wordTrie: TrieNode[] = [ \n
+    ${trie.map(
+      (node, index): string => `/* ${index} */ ${JSON.stringify(node)}`,
+    )}
+  ];`;
+
+  return content;
+};
+
 console.log(wordTrie);
+saveTrieToFile(trieFileWrap(wordTrie), SAVE_PATH);
 
 // 0  ['b', [1, 5, 2, 11]],
 // 1  ['a', [2, 3, 6]],
