@@ -8,9 +8,11 @@ const words: string[] = [
   'balance',
   'banana',
   'basic',
+  'bash',
   'between',
-  'blast',
   'blue',
+  'blast',
+  'bland',
   'brother',
 ];
 const wordTrie = constructWordTrie2(words);
